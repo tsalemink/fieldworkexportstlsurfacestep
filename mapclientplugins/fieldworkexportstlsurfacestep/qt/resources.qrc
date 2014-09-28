@@ -1,0 +1,6 @@
+
+<RCC>
+  <qresource prefix="fieldworkexportstlsurfacestep">
+    <file>images/fieldworkexportstlsurface.png</file>
+  </qresource>
+</RCC>

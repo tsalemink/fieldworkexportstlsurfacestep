@@ -1,0 +1,148 @@
+
+'''
+MAP Client Plugin Step
+'''
+import os
+
+from PySide import QtGui
+from PySide import QtCore
+
+from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
+from mapclientplugins.fieldworkexportstlsurfacestep.configuredialog import ConfigureDialog
+
+from gias.common import stlwriter
+
+class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
+    '''
+    Skeleton step which is intended to be a helpful starting point
+    for new steps.
+    '''
+
+    def __init__(self, location):
+        super(fieldworkexportstlsurfaceStep, self).__init__('Fieldwork Export STL Surface', location)
+        self._configured = False # A step cannot be executed until it has been configured.
+        self._category = 'Output'
+        # Add any other initialisation code here:
+        self._icon =  QtGui.QImage(':/fieldworkexportstlsurfacestep/images/fieldworkexportstlsurface.png')
+        # Ports:
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                      'ju#fieldworkmodel'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                      'string'))
+        self._config = {}
+        self._config['identifier'] = ''
+        self._config['filename'] = ''
+        self._config['discretisation'] = '10x10'
+        self._model = None
+
+
+    def execute(self):
+        '''
+        Add your code here that will kick off the execution of the step.
+        Make sure you call the _doneExecution() method when finished.  This method
+        may be connected up to a button in a widget for example.
+        '''
+        # Put your execute step code here before calling the '_doneExecution' method.
+        d = [int(x) for x in self._config['discretisation'].split('x')]
+        if len(d)!=2:
+            raise ValueError('Incorrected discretisation: '+self._config['discretisation'])
+
+        filename = self._config['filename']
+        if filename=='':
+            raise ValueError('Empty filename')
+
+        V,T = self._model.triangulate(d, merge=True)
+        faces = []
+        for t in T:
+            faces.append(V[t[::-1],:])
+
+        with open(filename, 'w') as fp:
+            writer = stlwriter.ASCII_STL_Writer(fp)
+            writer.add_faces(faces)
+            writer.close()
+
+        self._doneExecution()
+
+    def setPortData(self, index, dataIn):
+        '''
+        Add your code here that will set the appropriate objects for this step.
+        The index is the index of the port in the port list.  If there is only one
+        uses port for this step then the index can be ignored.
+        '''
+        if index == 0:
+            self._model = dataIn # ju#fieldworkmodel
+        else:
+            self._config['filename'] = dataIn # string
+
+    def configure(self):
+        '''
+        This function will be called when the configure icon on the step is
+        clicked.  It is appropriate to display a configuration dialog at this
+        time.  If the conditions for the configuration of this step are complete
+        then set:
+            self._configured = True
+        '''
+        dlg = ConfigureDialog()
+        dlg.identifierOccursCount = self._identifierOccursCount
+        dlg.setConfig(self._config)
+        dlg.validate()
+        dlg.setModal(True)
+        
+        if dlg.exec_():
+            self._config = dlg.getConfig()
+        
+        self._configured = dlg.validate()
+        self._configuredObserver()
+
+    def getIdentifier(self):
+        '''
+        The identifier is a string that must be unique within a workflow.
+        '''
+        return self._config['identifier']
+
+    def setIdentifier(self, identifier):
+        '''
+        The framework will set the identifier for this step when it is loaded.
+        '''
+        self._config['identifier'] = identifier
+
+    def serialize(self, location):
+        '''
+        Add code to serialize this step to disk.  The filename should
+        use the step identifier (received from getIdentifier()) to keep it
+        unique within the workflow.  The suggested name for the file on
+        disk is:
+            filename = getIdentifier() + '.conf'
+        '''
+        configuration_file = os.path.join(location, self.getIdentifier() + '.conf')
+        conf = QtCore.QSettings(configuration_file, QtCore.QSettings.IniFormat)
+        conf.beginGroup('config')
+        conf.setValue('identifier', self._config['identifier'])
+        conf.setValue('filename', self._config['filename'])
+        conf.setValue('discretisation', self._config['discretisation'])
+        conf.endGroup()
+
+
+    def deserialize(self, location):
+        '''
+        Add code to deserialize this step from disk.  As with the serialize 
+        method the filename should use the step identifier.  Obviously the 
+        filename used here should be the same as the one used by the
+        serialize method.
+        '''
+        configuration_file = os.path.join(location, self.getIdentifier() + '.conf')
+        conf = QtCore.QSettings(configuration_file, QtCore.QSettings.IniFormat)
+        conf.beginGroup('config')
+        self._config['identifier'] = conf.value('identifier', '')
+        self._config['filename'] = conf.value('filename', '')
+        self._config['discretisation'] = conf.value('discretisation', '')
+        conf.endGroup()
+
+        d = ConfigureDialog()
+        d.identifierOccursCount = self._identifierOccursCount
+        d.setConfig(self._config)
+        self._configured = d.validate()
+
+
