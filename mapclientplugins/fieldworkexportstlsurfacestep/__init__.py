@@ -23,6 +23,9 @@ MAP Client Plugin
 
 __version__ = '0.1.0'
 __author__ = 'Ju Zhang'
+__stepname__ = 'Fieldwork Export STL Surface'
+__location__ = 'https://github.com/mapclient-plugins/fieldworkexportstlsurfacestep/archive/master.zip'
+
 
 
 # import class that derives itself from the step mountpoint.
