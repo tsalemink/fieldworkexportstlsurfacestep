@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>303</height>
+    <width>482</width>
+    <height>246</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ConfigureDialog</string>
+   <string>Configure Export STL Surface Step</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -21,34 +21,45 @@
      </property>
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
-       <widget class="QLabel" name="label0">
+       <widget class="QLabel" name="idLabel">
         <property name="text">
-         <string>identifier:  </string>
+         <string>Identifier:  </string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit0"/>
+       <widget class="QLineEdit" name="idLineEdit"/>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label1">
+       <widget class="QLabel" name="fileLocLabel">
         <property name="text">
          <string>Filename:  </string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit1"/>
-      </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="label2">
+       <widget class="QLabel" name="discLabel">
         <property name="text">
          <string>Discretisation:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="lineEdit2"/>
+       <widget class="QLineEdit" name="discLineEdit"/>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="fileLocLineEdit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="fileLocButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -65,6 +76,46 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>idLineEdit</tabstop>
+  <tabstop>fileLocLineEdit</tabstop>
+  <tabstop>fileLocButton</tabstop>
+  <tabstop>discLineEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>240</x>
+     <y>223</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>240</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>240</x>
+     <y>223</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>240</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

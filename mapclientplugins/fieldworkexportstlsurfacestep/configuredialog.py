@@ -18,11 +18,12 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 """
 
+import os
 from PySide import QtGui
-from mapclientplugins.fieldworkexportstlsurfacestep.ui_configuredialog import Ui_ConfigureDialog
+from mapclientplugins.fieldworkexportstlsurfacestep.ui_configuredialog import Ui_Dialog
 
 INVALID_STYLE_SHEET = 'background-color: rgba(239, 0, 0, 50)'
-DEFAULT_STYLE_SHEET = ''
+DEFAULT_STYLE_SHEET = 'background-color: rgba(255, 255, 255, 50)'
 
 class ConfigureDialog(QtGui.QDialog):
     '''
@@ -35,13 +36,14 @@ class ConfigureDialog(QtGui.QDialog):
         '''
         QtGui.QDialog.__init__(self, parent)
         
-        self._ui = Ui_ConfigureDialog()
+        self._ui = Ui_Dialog()
         self._ui.setupUi(self)
 
         # Keep track of the previous identifier so that we can track changes
         # and know how many occurrences of the current identifier there should
         # be.
         self._previousIdentifier = ''
+        self._previousFileLoc = ''
         # Set a place holder for a callable that will get set from the step.
         # We will use this method to decide whether the identifier is unique.
         self.identifierOccursCount = None
@@ -49,7 +51,9 @@ class ConfigureDialog(QtGui.QDialog):
         self._makeConnections()
 
     def _makeConnections(self):
-        self._ui.lineEdit0.textChanged.connect(self.validate)
+        self._ui.idLineEdit.textChanged.connect(self.validate)
+        self._ui.fileLocButton.clicked.connect(self._fileLocClicked)
+        self._ui.fileLocLineEdit.textChanged.connect(self._fileLocEdited)
 
     def accept(self):
         '''
@@ -73,12 +77,21 @@ class ConfigureDialog(QtGui.QDialog):
         '''
         # Determine if the current identifier is unique throughout the workflow
         # The identifierOccursCount method is part of the interface to the workflow framework.
-        value = self.identifierOccursCount(self._ui.lineEdit0.text())
-        valid = (value == 0) or (value == 1 and self._previousIdentifier == self._ui.lineEdit0.text())
-        if valid:
-            self._ui.lineEdit0.setStyleSheet(DEFAULT_STYLE_SHEET)
+        idValue = self.identifierOccursCount(self._ui.idLineEdit.text())
+        idValid = (idValue == 0) or (idValue == 1 and self._previousIdentifier == self._ui.idLineEdit.text())
+        if idValid:
+            self._ui.idLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
         else:
-            self._ui.lineEdit0.setStyleSheet(INVALID_STYLE_SHEET)
+            self._ui.idLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
+
+        fileLocValid = os.path.exists(os.path.dirname(self._ui.fileLocLineEdit.text()))
+        if fileLocValid:
+            self._ui.fileLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
+        else:
+            self._ui.fileLocLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
+            
+        valid = idValid and fileLocValid
+        self._ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(valid)
 
         return valid
 
@@ -88,11 +101,12 @@ class ConfigureDialog(QtGui.QDialog):
         set the _previousIdentifier value so that we can check uniqueness of the
         identifier over the whole of the workflow.
         '''
-        self._previousIdentifier = self._ui.lineEdit0.text()
+        self._previousIdentifier = self._ui.idLineEdit.text()
+        self._previousFileLoc = self._ui.fileLocLineEdit.text()
         config = {}
-        config['identifier'] = self._ui.lineEdit0.text()
-        config['filename'] = self._ui.lineEdit1.text()
-        config['discretisation'] = self._ui.lineEdit2.text()
+        config['identifier'] = self._ui.idLineEdit.text()
+        config['filename'] = self._ui.fileLocLineEdit.text()
+        config['discretisation'] = self._ui.discLineEdit.text()
         return config
 
     def setConfig(self, config):
@@ -102,7 +116,16 @@ class ConfigureDialog(QtGui.QDialog):
         identifier over the whole of the workflow.
         '''
         self._previousIdentifier = config['identifier']
-        self._ui.lineEdit0.setText(config['identifier'])
-        self._ui.lineEdit1.setText(config['filename'])
-        self._ui.lineEdit2.setText(config['discretisation'])
+        self._previousFileLoc = config['filename']
+        self._ui.idLineEdit.setText(config['identifier'])
+        self._ui.fileLocLineEdit.setText(config['filename'])
+        self._ui.discLineEdit.setText(config['discretisation'])
 
+    def _fileLocClicked(self):
+        location = QtGui.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousFileLoc)
+        if location[0]:
+            self._previousFileLoc = location[0]
+            self._ui.fileLocLineEdit.setText(location[0])
+
+    def _fileLocEdited(self):
+        self.validate()

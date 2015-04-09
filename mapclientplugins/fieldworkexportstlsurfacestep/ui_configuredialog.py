@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'configuredialog.ui'
+# Form implementation generated from reading ui file 'qt/configuredialog.ui'
 #
-# Created: Sun Sep 28 21:00:01 2014
-#      by: pyside-uic 0.2.14 running on PySide 1.1.2
+# Created: Thu Apr  9 14:43:28 2015
+#      by: pyside-uic 0.2.15 running on PySide 1.2.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
 
-class Ui_ConfigureDialog(object):
+class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(418, 303)
+        Dialog.resize(482, 246)
         self.gridLayout = QtGui.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
         self.configGroupBox = QtGui.QGroupBox(Dialog)
@@ -20,24 +20,30 @@ class Ui_ConfigureDialog(object):
         self.configGroupBox.setObjectName("configGroupBox")
         self.formLayout = QtGui.QFormLayout(self.configGroupBox)
         self.formLayout.setObjectName("formLayout")
-        self.label0 = QtGui.QLabel(self.configGroupBox)
-        self.label0.setObjectName("label0")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label0)
-        self.lineEdit0 = QtGui.QLineEdit(self.configGroupBox)
-        self.lineEdit0.setObjectName("lineEdit0")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.lineEdit0)
-        self.label1 = QtGui.QLabel(self.configGroupBox)
-        self.label1.setObjectName("label1")
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label1)
-        self.lineEdit1 = QtGui.QLineEdit(self.configGroupBox)
-        self.lineEdit1.setObjectName("lineEdit1")
-        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.lineEdit1)
-        self.label2 = QtGui.QLabel(self.configGroupBox)
-        self.label2.setObjectName("label2")
-        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label2)
-        self.lineEdit2 = QtGui.QLineEdit(self.configGroupBox)
-        self.lineEdit2.setObjectName("lineEdit2")
-        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.lineEdit2)
+        self.idLabel = QtGui.QLabel(self.configGroupBox)
+        self.idLabel.setObjectName("idLabel")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.idLabel)
+        self.idLineEdit = QtGui.QLineEdit(self.configGroupBox)
+        self.idLineEdit.setObjectName("idLineEdit")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.idLineEdit)
+        self.fileLocLabel = QtGui.QLabel(self.configGroupBox)
+        self.fileLocLabel.setObjectName("fileLocLabel")
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.fileLocLabel)
+        self.discLabel = QtGui.QLabel(self.configGroupBox)
+        self.discLabel.setObjectName("discLabel")
+        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.discLabel)
+        self.discLineEdit = QtGui.QLineEdit(self.configGroupBox)
+        self.discLineEdit.setObjectName("discLineEdit")
+        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.discLineEdit)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.fileLocLineEdit = QtGui.QLineEdit(self.configGroupBox)
+        self.fileLocLineEdit.setObjectName("fileLocLineEdit")
+        self.horizontalLayout.addWidget(self.fileLocLineEdit)
+        self.fileLocButton = QtGui.QPushButton(self.configGroupBox)
+        self.fileLocButton.setObjectName("fileLocButton")
+        self.horizontalLayout.addWidget(self.fileLocButton)
+        self.formLayout.setLayout(1, QtGui.QFormLayout.FieldRole, self.horizontalLayout)
         self.gridLayout.addWidget(self.configGroupBox, 0, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(Dialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -49,10 +55,15 @@ class Ui_ConfigureDialog(object):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), Dialog.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), Dialog.reject)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
+        Dialog.setTabOrder(self.idLineEdit, self.fileLocLineEdit)
+        Dialog.setTabOrder(self.fileLocLineEdit, self.fileLocButton)
+        Dialog.setTabOrder(self.fileLocButton, self.discLineEdit)
+        Dialog.setTabOrder(self.discLineEdit, self.buttonBox)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "ConfigureDialog", None, QtGui.QApplication.UnicodeUTF8))
-        self.label0.setText(QtGui.QApplication.translate("Dialog", "identifier:  ", None, QtGui.QApplication.UnicodeUTF8))
-        self.label1.setText(QtGui.QApplication.translate("Dialog", "Filename:  ", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2.setText(QtGui.QApplication.translate("Dialog", "Discretisation:", None, QtGui.QApplication.UnicodeUTF8))
+        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Configure Export STL Surface Step", None, QtGui.QApplication.UnicodeUTF8))
+        self.idLabel.setText(QtGui.QApplication.translate("Dialog", "Identifier:  ", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileLocLabel.setText(QtGui.QApplication.translate("Dialog", "Filename:  ", None, QtGui.QApplication.UnicodeUTF8))
+        self.discLabel.setText(QtGui.QApplication.translate("Dialog", "Discretisation:", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileLocButton.setText(QtGui.QApplication.translate("Dialog", "...", None, QtGui.QApplication.UnicodeUTF8))
 
