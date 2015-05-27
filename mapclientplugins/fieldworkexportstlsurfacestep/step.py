@@ -71,7 +71,7 @@ class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
         if filename=='':
             raise ValueError('Empty filename')
 
-        V,T = self._model.triangulate(d, merge=True)
+        V,T = self._model.triangulate(d, merge=False)
         faces = []
         for t in T:
             faces.append(V[t[::-1],:])
