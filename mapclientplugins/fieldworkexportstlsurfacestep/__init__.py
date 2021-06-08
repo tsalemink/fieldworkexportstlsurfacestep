@@ -26,8 +26,6 @@ __author__ = 'Ju Zhang'
 __stepname__ = 'Fieldwork Export STL Surface'
 __location__ = 'https://github.com/mapclient-plugins/fieldworkexportstlsurfacestep/archive/master.zip'
 
-
-
 # import class that derives itself from the step mountpoint.
 from mapclientplugins.fieldworkexportstlsurfacestep import step
 

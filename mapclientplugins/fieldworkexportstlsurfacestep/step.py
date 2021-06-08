@@ -29,6 +29,7 @@ from mapclientplugins.fieldworkexportstlsurfacestep.configuredialog import Confi
 
 from gias.common import stlwriter
 
+
 class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
     '''
     Skeleton step which is intended to be a helpful starting point
@@ -37,10 +38,10 @@ class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
 
     def __init__(self, location):
         super(fieldworkexportstlsurfaceStep, self).__init__('Fieldwork Export STL Surface', location)
-        self._configured = False # A step cannot be executed until it has been configured.
+        self._configured = False  # A step cannot be executed until it has been configured.
         self._category = 'Output'
         # Add any other initialisation code here:
-        self._icon =  QtGui.QImage(':/fieldworkexportstlsurfacestep/images/fieldworkexportstlsurface.png')
+        self._icon = QtGui.QImage(':/fieldworkexportstlsurfacestep/images/fieldworkexportstlsurface.png')
         # Ports:
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
@@ -54,7 +55,6 @@ class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
         self._config['discretisation'] = '10x10'
         self._model = None
 
-
     def execute(self):
         '''
         Add your code here that will kick off the execution of the step.
@@ -63,17 +63,17 @@ class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
         '''
         # Put your execute step code here before calling the '_doneExecution' method.
         d = [int(x) for x in self._config['discretisation'].split('x')]
-        if len(d)!=2:
-            raise ValueError('Incorrected discretisation: '+self._config['discretisation'])
+        if len(d) != 2:
+            raise ValueError('Incorrected discretisation: ' + self._config['discretisation'])
 
         filename = self._config['filename']
-        if filename=='':
+        if filename == '':
             raise ValueError('Empty filename')
 
-        V,T = self._model.triangulate(d, merge=False)
+        V, T = self._model.triangulate(d, merge=False)
         faces = []
         for t in T:
-            faces.append(V[t[::-1],:])
+            faces.append(V[t[::-1], :])
 
         with open(filename, 'w') as fp:
             writer = stlwriter.ASCII_STL_Writer(fp)
@@ -89,9 +89,9 @@ class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
         uses port for this step then the index can be ignored.
         '''
         if index == 0:
-            self._model = dataIn # ju#fieldworkmodel
+            self._model = dataIn  # ju#fieldworkmodel
         else:
-            self._config['filename'] = dataIn # string
+            self._config['filename'] = dataIn  # string
 
     def configure(self):
         '''
@@ -106,10 +106,10 @@ class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
         dlg.setConfig(self._config)
         dlg.validate()
         dlg.setModal(True)
-        
+
         if dlg.exec_():
             self._config = dlg.getConfig()
-        
+
         self._configured = dlg.validate()
         self._configuredObserver()
 
@@ -143,5 +143,3 @@ class fieldworkexportstlsurfaceStep(WorkflowStepMountPoint):
         d.identifierOccursCount = self._identifierOccursCount
         d.setConfig(self._config)
         self._configured = d.validate()
-
-
